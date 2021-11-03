@@ -11,4 +11,3 @@ This file provides to ignore below files/directories from commits:
 6. override.tf.json and files endedd with _override.tf.json
 7. files named .terraformrc or terraform.rc
 
-
