@@ -6,14 +6,30 @@
      /usr/share/misc/magic.mgc
     ```
 3.  Создадим скрипт: test_script.sh, который раз в 10 секунд будет писать в файл output.txt строку.
+    
+    ~~ps -elf | grep test_script -> PID = 2175~~
+    ~~rm output.txt~~
+    ~~vagrant@vagrant:~$ lsof -p 2175~~
+    ~~COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME~~
+    ~~test_scri 2175 vagrant  255r   REG  253,0      117 1048614 /home/vagrant/test_script.sh (deleted)~~
+    ~~echo '' > /proc/2175/fd/255~~
+    
+    **UPD:**
+    Откроем файл output.txt в редокторе vim
     ```
-    ps -elf | grep test_script -> PID = 2175
-    rm output.txt
-    vagrant@vagrant:~$ lsof -p 2175
-    COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
-    test_scri 2175 vagrant  255r   REG  253,0      117 1048614 /home/vagrant/test_script.sh (deleted)
-  
-    echo '' > /proc/2175/fd/255
+    ps -elf | grep vim -> PID = 4050
+    lsof -p 4050 => 
+    vi      4050 vagrant    4u   REG  253,0    12288 1048615 /home/vagrant/.output.txt.swp
+    
+    rm /home/vagrant/.output.txt.swp
+    lsof -p 4050 =>
+    COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+    vi      4050 vagrant    4u   REG  253,0    12288 1048615 /home/vagrant/.output.txt.swp (deleted)
+    echo '' > /proc/4050/fd/4
+    lsof -p 4050 =>
+    COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+    vi      4050 vagrant    4u   REG  253,0        1 1048615 /home/vagrant/.output.txt.swp (deleted)
+               тут видим, что size 1, хотя до этого был 12288
     ```
 
 4. Зомби процессы будут отображаться с таблице процессаов (ps), но не будут занимать ресурсы ОС.
